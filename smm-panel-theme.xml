@@ -190,15 +190,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, runTransaction, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// --- CONFIGURATION ---
-const firebaseConfig = {
-  apiKey: "AIzaSyBq7btj6m0_GQ_3e05jtZuxdWECypxuF5Y",
-  authDomain: "smmzm-ad329.firebaseapp.com",
-  projectId: "smmzm-ad329",
-  storageBucket: "smmzm-ad329.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
