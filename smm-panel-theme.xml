@@ -1,883 +1,322 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateUrl='indie.xml' b:templateVersion='1.0.0' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html
+  b:version='2'
+  xmlns='http://www.w3.org/1999/xhtml'
+  xmlns:b='http://www.google.com/2005/gml/b'
+  xmlns:data='http://www.google.com/2005/gml/data'
+  xmlns:expr='http://www.google.com/2005/gml/expr'>
+
 <head>
-<meta content='width=device-width, initial-scale=1' name='viewport'/>
-<title><data:blog.pageTitle/></title>
-<link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap' rel='stylesheet'/>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
-<b:skin><![CDATA[
-/* 
-  SMM Panel Theme 
-  Dark Mode & Glassmorphism
-*/
-:root {
-  --bg-color: #0f172a;
-  --card-bg: #1e293b;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent: #6366f1;
-  --accent-hover: #4f46e5;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --sidebar-width: 260px;
-}
+  <meta charset='UTF-8'/>
+  <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
+  <title>SMM Panel - Premium</title>
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-body { background-color: var(--bg-color); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
 
-/* Layout */
-#app { display: flex; min-height: 100vh; }
-.sidebar {
-  width: var(--sidebar-width);
-  background: var(--card-bg);
-  border-right: 1px solid var(--glass-border);
-  position: fixed;
-  height: 100vh;
-  padding: 20px;
-  transition: transform 0.3s ease;
-  z-index: 50;
-}
-.main-content {
-  flex: 1;
-  margin-left: var(--sidebar-width);
-  padding: 30px;
-  transition: margin-left 0.3s ease;
-}
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#1e293b;
+      --accent:#6366f1;
+      --text:#f1f5f9;
+      --success:#10b981;
+      --danger:#ef4444;
+    }
 
-/* Mobile */
-@media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.active { transform: translateX(0); }
-  .main-content { margin-left: 0; padding: 15px; }
-  .mobile-menu-btn { display: block !important; }
-}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 
-/* Components */
-.logo { font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 40px; display: flex; align-items: center; gap: 10px; }
-.nav-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 15px;
-  color: var(--text-secondary);
-  text-decoration: none;
-  border-radius: 12px;
-  margin-bottom: 5px;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-.nav-item:hover, .nav-item.active { background: rgba(99, 102, 241, 0.1); color: var(--accent); }
-.nav-item i { width: 20px; text-align: center; }
+    body{
+      background:var(--bg);
+      color:var(--text);
+    }
 
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
+    .hidden{display:none}
 
-.btn {
-  background: var(--accent);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn:hover { background: var(--accent-hover); }
-.btn-block { width: 100%; }
-.btn-danger { background: var(--danger); }
-.btn-success { background: var(--success); }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
+    .container{
+      display:flex;
+      min-height:100vh;
+    }
 
-.form-group { margin-bottom: 20px; }
-.form-label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 14px; }
-.form-control {
-  width: 100%;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid var(--glass-border);
-  color: white;
-  padding: 12px;
-  border-radius: 8px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.form-control:focus { border-color: var(--accent); }
-select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
+    .sidebar{
+      width:240px;
+      background:#111827;
+      padding:20px;
+    }
 
-/* Stats Grid */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 30px; }
-.stat-card { background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(30,41,59,0.4)); border: 1px solid var(--glass-border); padding: 24px; border-radius: 16px; position: relative; overflow: hidden; }
-.stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
-.stat-value { font-size: 28px; font-weight: 700; margin: 10px 0 5px; }
-.stat-label { color: var(--text-secondary); font-size: 14px; }
+    .sidebar h2{
+      color:var(--accent);
+      margin-bottom:20px;
+    }
 
-/* Tables */
-.table-container { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; }
-th { text-align: left; padding: 16px; color: var(--text-secondary); font-weight: 500; border-bottom: 1px solid var(--glass-border); }
-td { padding: 16px; border-bottom: 1px solid var(--glass-border); color: var(--text-primary); }
-.badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
-.badge-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-.badge-completed, .badge-approved { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-.badge-cancelled, .badge-rejected { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+    .sidebar a{
+      display:block;
+      padding:10px;
+      margin-bottom:8px;
+      background:var(--card);
+      color:white;
+      text-decoration:none;
+      border-radius:8px;
+    }
 
-/* Auth Pages */
-.auth-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-.auth-card { width: 100%; max-width: 400px; }
+    .content{
+      flex:1;
+      padding:30px;
+    }
 
-/* Toast */
-.toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
-.toast { background: var(--card-bg); border: 1px solid var(--glass-border); padding: 16px 20px; border-radius: 8px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); animation: slideIn 0.3s ease; min-width: 300px; }
-.toast-success { border-left: 4px solid var(--success); }
-.toast-error { border-left: 4px solid var(--danger); }
-@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .card{
+      background:var(--card);
+      padding:20px;
+      border-radius:16px;
+      margin-bottom:20px;
+    }
 
-/* Loading */
-.loader { border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top: 3px solid var(--accent); width: 24px; height: 24px; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 999; }
+    input,select{
+      width:100%;
+      padding:10px;
+      margin-bottom:10px;
+      border-radius:8px;
+      border:none;
+    }
 
-.hidden { display: none !important; }
-.mobile-menu-btn { display: none; position: fixed; top: 20px; right: 20px; z-index: 60; background: var(--card-bg); border: 1px solid var(--glass-border); color: white; padding: 10px; border-radius: 8px; cursor: pointer; }
+    button{
+      padding:10px;
+      background:var(--accent);
+      border:none;
+      color:white;
+      border-radius:8px;
+      cursor:pointer;
+      width:100%;
+    }
 
-/* Tabs */
-.tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
-.tab { padding: 8px 16px; cursor: pointer; border-radius: 6px; color: var(--text-secondary); }
-.tab.active { background: var(--accent); color: white; }
-]]></b:skin>
+    .badge{
+      padding:5px 10px;
+      border-radius:8px;
+      font-size:12px;
+    }
+
+    .pending{background:orange}
+    .approved{background:var(--success)}
+    .rejected{background:var(--danger)}
+  </style>
 </head>
+
 <body>
 
-
-
-<!-- APP ROOT -->
 <div id="app">
-  <div id="page-loader" class="page-loader"><div class="loader" style="width: 50px; height: 50px;"></div></div>
-  <div id="toast-container" class="toast-container"></div>
-  
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="logo">
-      <i class="fas fa-bolt"></i> SMM Panel
+
+  <!-- AUTH SECTION -->
+  <div id="authSection">
+    <div class="card" style="max-width:400px;margin:100px auto;">
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email"/>
+      <input type="password" id="loginPassword" placeholder="Password"/>
+      <button onclick="login()">Login</button>
+      <br/><br/>
+      <p>Register</p>
+      <input type="email" id="regEmail" placeholder="Email"/>
+      <input type="password" id="regPassword" placeholder="Password"/>
+      <button onclick="register()">Register</button>
     </div>
-    <nav id="nav-menu">
-      <!-- Nav items injected by JS -->
-    </nav>
-  </aside>
+  </div>
 
-  <!-- Mobile Toggle -->
-  <button class="mobile-menu-btn" onclick="toggleSidebar()">
-    <i class="fas fa-bars"></i>
-  </button>
+  <!-- DASHBOARD -->
+  <div id="dashboardSection" class="hidden">
+    <div class="container">
+      <div class="sidebar">
+        <h2>SMM Panel</h2>
+        <a href="#" onclick="showPage('home')">Dashboard</a>
+        <a href="#" onclick="showPage('order')">New Order</a>
+        <a href="#" onclick="showPage('orders')">Order History</a>
+        <a href="#" onclick="showPage('funds')">Add Funds</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
 
-  <!-- Main Content -->
-  <main class="main-content" id="main-content">
-    <!-- Views injected by JS -->
-  </main>
+      <div class="content">
+
+        <!-- HOME -->
+        <div id="homePage">
+          <div class="card">
+            <h3>Welcome</h3>
+            <p>Balance: $<span id="userBalance">0</span></p>
+          </div>
+        </div>
+
+        <!-- NEW ORDER -->
+        <div id="orderPage" class="hidden">
+          <div class="card">
+            <h3>New Order</h3>
+            <select id="serviceSelect"></select>
+            <input type="text" id="orderLink" placeholder="Link"/>
+            <input type="number" id="orderQty" placeholder="Quantity"/>
+            <button onclick="placeOrder()">Submit Order</button>
+          </div>
+        </div>
+
+        <!-- ORDER HISTORY -->
+        <div id="ordersPage" class="hidden">
+          <div class="card">
+            <h3>Orders</h3>
+            <div id="ordersList"></div>
+          </div>
+        </div>
+
+        <!-- ADD FUNDS -->
+        <div id="fundsPage" class="hidden">
+          <div class="card">
+            <h3>Add Funds (MTN / Airtel)</h3>
+            <select id="network">
+              <option>MTN</option>
+              <option>Airtel</option>
+            </select>
+            <input type="number" id="amount" placeholder="Amount"/>
+            <input type="text" id="txId" placeholder="Transaction ID"/>
+            <input type="text" id="phone" placeholder="Sender Phone"/>
+            <button onclick="submitPayment()">Submit Payment</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- FIREBASE & APP LOGIC -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, runTransaction, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
+  let currentUserData = null;
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// --- STATE ---
-let currentUser = null;
-let userProfile = null;
-let services = [];
-
-// --- ROUTER ---
-const routes = {
-  'login': renderLogin,
-  'register': renderRegister,
-  'dashboard': renderDashboard,
-  'new-order': renderNewOrder,
-  'orders': renderOrders,
-  'add-funds': renderAddFunds,
-  'admin': renderAdmin
-};
-
-async function router() {
-  const hash = window.location.hash.slice(1) || 'login';
-  const page = hash.split('?')[0]; // Handle query params if needed
-  
-  // Auth Guard
-  if (!currentUser && page !== 'login' && page !== 'register') {
-    window.location.hash = 'login';
-    return;
-  }
-  if (currentUser && (page === 'login' || page === 'register')) {
-    window.location.hash = 'dashboard';
-    return;
+  function register(){
+    const email = regEmail.value;
+    const pass = regPassword.value;
+    auth.createUserWithEmailAndPassword(email,pass)
+    .then(user=>{
+      db.collection("users").doc(user.user.uid).set({
+        email:email,
+        balance:0,
+        role:"user",
+        createdAt:new Date()
+      });
+      alert("Registered!");
+    });
   }
 
-  // Render
-  const renderer = routes[page] || render404;
-  
-  // Update Sidebar Active State
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  const activeLink = document.querySelector(`[href="#${page}"]`);
-  if (activeLink) activeLink.classList.add('active');
-
-  // Hide sidebar on mobile nav
-  if (window.innerWidth <= 768) {
-    document.getElementById('sidebar').classList.remove('active');
+  function login(){
+    auth.signInWithEmailAndPassword(loginEmail.value,loginPassword.value);
   }
 
-  await renderer();
-}
+  function logout(){
+    auth.signOut();
+  }
 
-window.addEventListener('hashchange', router);
-window.addEventListener('load', () => {
-  // Listen for Auth State
-  onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-    if (user) {
-      // Fetch Profile
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        userProfile = docSnap.data();
-      }
-      renderSidebar();
+  auth.onAuthStateChanged(user=>{
+    if(user){
+      authSection.classList.add("hidden");
+      dashboardSection.classList.remove("hidden");
+      loadUser(user.uid);
+      loadServices();
+      loadOrders(user.uid);
     } else {
-      userProfile = null;
-      document.getElementById('sidebar').style.display = 'none';
-      document.getElementById('main-content').style.marginLeft = '0';
-    }
-    
-    document.getElementById('page-loader').classList.add('hidden');
-    router();
-  });
-});
-
-// --- UI HELPERS ---
-function showToast(message, type = 'success') {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-    <span>${message}</span>
-  `;
-  container.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
-
-window.toggleSidebar = () => {
-  document.getElementById('sidebar').classList.toggle('active');
-};
-
-function renderSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const main = document.getElementById('main-content');
-  
-  if (!currentUser) {
-    sidebar.style.display = 'none';
-    main.style.marginLeft = '0';
-    return;
-  }
-
-  sidebar.style.display = 'block';
-  if (window.innerWidth > 768) main.style.marginLeft = '260px';
-
-  const isAdmin = userProfile?.role === 'admin';
-  
-  document.getElementById('nav-menu').innerHTML = `
-    <a href="#dashboard" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
-    <a href="#new-order" class="nav-item"><i class="fas fa-cart-plus"></i> New Order</a>
-    <a href="#orders" class="nav-item"><i class="fas fa-list"></i> Order History</a>
-    <a href="#add-funds" class="nav-item"><i class="fas fa-wallet"></i> Add Funds</a>
-    ${isAdmin ? `<a href="#admin" class="nav-item"><i class="fas fa-shield-alt"></i> Admin Panel</a>` : ''}
-    <div class="nav-item" onclick="window.logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
-  `;
-}
-
-window.logout = () => {
-  signOut(auth).then(() => showToast('Logged out'));
-};
-
-// --- PAGES ---
-
-function renderLogin() {
-  document.getElementById('sidebar').style.display = 'none';
-  document.getElementById('main-content').style.marginLeft = '0';
-  document.getElementById('main-content').innerHTML = `
-    <div class="auth-container">
-      <div class="card auth-card">
-        <h2 style="text-align:center; margin-bottom:20px;">Login</h2>
-        <form id="login-form">
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" required>
-          </div>
-          <button type="submit" class="btn btn-block">Login</button>
-          <p style="text-align:center; margin-top:15px; color:var(--text-secondary);">
-            No account? <a href="#register" style="color:var(--accent);">Register</a>
-          </p>
-        </form>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('login-form').onsubmit = async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      showToast('Welcome back!');
-    } catch (err) {
-      showToast(err.message, 'error');
-    }
-  };
-}
-
-function renderRegister() {
-  document.getElementById('sidebar').style.display = 'none';
-  document.getElementById('main-content').style.marginLeft = '0';
-  document.getElementById('main-content').innerHTML = `
-    <div class="auth-container">
-      <div class="card auth-card">
-        <h2 style="text-align:center; margin-bottom:20px;">Register</h2>
-        <form id="register-form">
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" id="reg-email" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-control" id="reg-password" required>
-          </div>
-          <button type="submit" class="btn btn-block">Register</button>
-          <p style="text-align:center; margin-top:15px; color:var(--text-secondary);">
-            Have an account? <a href="#login" style="color:var(--accent);">Login</a>
-          </p>
-        </form>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('register-form').onsubmit = async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      // Create User Doc
-      await setDoc(doc(db, "users", cred.user.uid), {
-        uid: cred.user.uid,
-        email: email,
-        balance: 0,
-        role: 'user',
-        createdAt: serverTimestamp()
-      });
-      showToast('Account created!');
-    } catch (err) {
-      showToast(err.message, 'error');
-    }
-  };
-}
-
-function render404() {
-  document.getElementById('main-content').innerHTML = `<h1>404 - Page Not Found</h1>`;
-}
-
-async function renderDashboard() {
-  // Refresh profile to get latest balance
-  const docRef = doc(db, "users", currentUser.uid);
-  const docSnap = await getDoc(docRef);
-  userProfile = docSnap.data();
-
-  // Get Order Stats
-  const q = query(collection(db, "orders"), where("userId", "==", currentUser.uid));
-  const querySnapshot = await getDocs(q);
-  const totalOrders = querySnapshot.size;
-  let totalSpent = 0;
-  querySnapshot.forEach(doc => totalSpent += doc.data().price);
-
-  document.getElementById('main-content').innerHTML = `
-    <h2 style="margin-bottom:20px;">Dashboard</h2>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Current Balance</div>
-        <div class="stat-value">$${userProfile.balance.toFixed(2)}</div>
-        <a href="#add-funds" class="btn btn-sm">Add Funds</a>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Orders</div>
-        <div class="stat-value">${totalOrders}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Spent</div>
-        <div class="stat-value">$${totalSpent.toFixed(2)}</div>
-      </div>
-    </div>
-    
-    <div class="card">
-      <h3>Recent News</h3>
-      <p style="color:var(--text-secondary); margin-top:10px;">Welcome to the best SMM Panel. We support MTN and Airtel Mobile Money payments.</p>
-    </div>
-  `;
-}
-
-async function renderNewOrder() {
-  // Fetch Services
-  const q = query(collection(db, "services"), orderBy("category"));
-  const querySnapshot = await getDocs(q);
-  services = [];
-  querySnapshot.forEach(doc => services.push({id: doc.id, ...doc.data()}));
-
-  // Group by Category
-  const categories = [...new Set(services.map(s => s.category))];
-
-  document.getElementById('main-content').innerHTML = `
-    <h2 style="margin-bottom:20px;">New Order</h2>
-    <div class="card">
-      <form id="order-form">
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select class="form-control" id="category-select">
-            <option value="">Select Category</option>
-            ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Service</label>
-          <select class="form-control" id="service-select" disabled>
-            <option value="">Select Service</option>
-          </select>
-        </div>
-
-        <div id="service-desc" style="margin-bottom:20px; color:var(--text-secondary); font-size:14px;"></div>
-
-        <div class="form-group">
-          <label class="form-label">Link</label>
-          <input type="url" class="form-control" id="link" placeholder="https://..." required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Quantity</label>
-          <input type="number" class="form-control" id="quantity" required>
-          <small id="qty-limits" style="color:var(--text-secondary)"></small>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Total Charge</label>
-          <input type="text" class="form-control" id="charge" readonly value="$0.00">
-        </div>
-
-        <button type="submit" class="btn btn-block">Submit Order</button>
-      </form>
-    </div>
-  `;
-
-  // Logic
-  const catSelect = document.getElementById('category-select');
-  const servSelect = document.getElementById('service-select');
-  const qtyInput = document.getElementById('quantity');
-  const chargeInput = document.getElementById('charge');
-  let selectedService = null;
-
-  catSelect.addEventListener('change', () => {
-    const cat = catSelect.value;
-    servSelect.innerHTML = '<option value="">Select Service</option>';
-    servSelect.disabled = !cat;
-    
-    if (cat) {
-      const catServices = services.filter(s => s.category === cat);
-      catServices.forEach(s => {
-        servSelect.innerHTML += `<option value="${s.id}">${s.name} - $${s.price}/1k</option>`;
-      });
+      authSection.classList.remove("hidden");
+      dashboardSection.classList.add("hidden");
     }
   });
 
-  servSelect.addEventListener('change', () => {
-    const sId = servSelect.value;
-    selectedService = services.find(s => s.id === sId);
-    if (selectedService) {
-      document.getElementById('qty-limits').innerText = `Min: ${selectedService.min} | Max: ${selectedService.max}`;
-      calculatePrice();
-    }
-  });
-
-  qtyInput.addEventListener('input', calculatePrice);
-
-  function calculatePrice() {
-    if (!selectedService || !qtyInput.value) return;
-    const qty = parseInt(qtyInput.value);
-    const price = (qty / 1000) * selectedService.price;
-    chargeInput.value = `$${price.toFixed(4)}`;
-  }
-
-  document.getElementById('order-form').onsubmit = async (e) => {
-    e.preventDefault();
-    if (!selectedService) return showToast('Select a service', 'error');
-    
-    const qty = parseInt(qtyInput.value);
-    const link = document.getElementById('link').value;
-    const price = (qty / 1000) * selectedService.price;
-
-    if (qty < selectedService.min || qty > selectedService.max) {
-      return showToast(`Quantity must be between ${selectedService.min} and ${selectedService.max}`, 'error');
-    }
-
-    if (userProfile.balance < price) {
-      return showToast('Insufficient balance', 'error');
-    }
-
-    try {
-      // Run Transaction to deduct balance and create order securely
-      await runTransaction(db, async (transaction) => {
-        const userRef = doc(db, "users", currentUser.uid);
-        const userDoc = await transaction.get(userRef);
-        
-        if (!userDoc.exists()) throw "User does not exist!";
-        const newBalance = userDoc.data().balance - price;
-        
-        if (newBalance < 0) throw "Insufficient balance!";
-
-        transaction.update(userRef, { balance: newBalance });
-        
-        const newOrderRef = doc(collection(db, "orders"));
-        transaction.set(newOrderRef, {
-          orderId: newOrderRef.id,
-          userId: currentUser.uid,
-          serviceId: selectedService.id,
-          serviceName: selectedService.name,
-          link: link,
-          quantity: qty,
-          price: price,
-          status: 'Pending',
-          createdAt: serverTimestamp()
-        });
-      });
-
-      showToast('Order placed successfully!');
-      window.location.hash = 'orders';
-    } catch (err) {
-      showToast(err.toString(), 'error');
-    }
-  };
-}
-
-async function renderOrders() {
-  const q = query(collection(db, "orders"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-
-  let html = `
-    <h2 style="margin-bottom:20px;">Order History</h2>
-    <div class="card table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Service</th>
-            <th>Link</th>
-            <th>Qty</th>
-            <th>Charge</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-  `;
-
-  querySnapshot.forEach(doc => {
-    const o = doc.data();
-    const statusClass = o.status === 'Completed' ? 'badge-completed' : (o.status === 'Cancelled' ? 'badge-cancelled' : 'badge-pending');
-    html += `
-      <tr>
-        <td>${o.orderId.slice(0, 8)} <i class="fas fa-copy" style="cursor:pointer; font-size:12px; margin-left:5px;" onclick="navigator.clipboard.writeText('${o.orderId}'); showToast('Copied')"></i></td>
-        <td>${o.serviceName || 'Service ' + o.serviceId}</td>
-        <td><a href="${o.link}" target="_blank" style="color:var(--accent); text-decoration:none;">Link</a></td>
-        <td>${o.quantity}</td>
-        <td>$${o.price.toFixed(3)}</td>
-        <td><span class="badge ${statusClass}">${o.status}</span></td>
-      </tr>
-    `;
-  });
-
-  html += `</tbody></table></div>`;
-  document.getElementById('main-content').innerHTML = html;
-}
-
-async function renderAddFunds() {
-  document.getElementById('main-content').innerHTML = `
-    <h2 style="margin-bottom:20px;">Add Funds</h2>
-    <div class="card">
-      <h3>Mobile Money Payment</h3>
-      <p style="color:var(--text-secondary); margin-bottom:20px;">Send money to one of the numbers below and fill the form.</p>
-      
-      <div style="display:flex; gap:20px; margin-bottom:30px; flex-wrap:wrap;">
-        <div style="background:#fbbf24; color:black; padding:15px; border-radius:8px; flex:1; min-width:200px;">
-          <strong>MTN Mobile Money</strong><br>
-          096XXXXXXX<br>
-          Name: SMM Admin
-        </div>
-        <div style="background:#ef4444; color:white; padding:15px; border-radius:8px; flex:1; min-width:200px;">
-          <strong>Airtel Money</strong><br>
-          097XXXXXXX<br>
-          Name: SMM Admin
-        </div>
-      </div>
-
-      <form id="payment-form">
-        <div class="form-group">
-          <label class="form-label">Network</label>
-          <select class="form-control" id="pay-network" required>
-            <option value="MTN">MTN Mobile Money</option>
-            <option value="Airtel">Airtel Money</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Amount ($)</label>
-          <input type="number" class="form-control" id="pay-amount" required min="1">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Sender Phone Number</label>
-          <input type="text" class="form-control" id="pay-phone" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Transaction ID</label>
-          <input type="text" class="form-control" id="pay-trx" required>
-        </div>
-        <button type="submit" class="btn btn-block">Submit Payment</button>
-      </form>
-    </div>
-
-    <h3>Payment History</h3>
-    <div id="payment-history">Loading...</div>
-  `;
-
-  // Load History
-  const q = query(collection(db, "payments"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-  let histHtml = `<div class="card table-container"><table><thead><tr><th>ID</th><th>Method</th><th>Amount</th><th>Status</th></tr></thead><tbody>`;
-  querySnapshot.forEach(doc => {
-    const p = doc.data();
-    const statusClass = p.status === 'Approved' ? 'badge-approved' : (p.status === 'Rejected' ? 'badge-rejected' : 'badge-pending');
-    histHtml += `<tr><td>${p.transactionId}</td><td>${p.network}</td><td>$${p.amount}</td><td><span class="badge ${statusClass}">${p.status}</span></td></tr>`;
-  });
-  histHtml += `</tbody></table></div>`;
-  document.getElementById('payment-history').innerHTML = histHtml;
-
-  // Submit Handler
-  document.getElementById('payment-form').onsubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, "payments"), {
-        userId: currentUser.uid,
-        network: document.getElementById('pay-network').value,
-        amount: parseFloat(document.getElementById('pay-amount').value),
-        phone: document.getElementById('pay-phone').value,
-        transactionId: document.getElementById('pay-trx').value,
-        status: 'Pending',
-        createdAt: serverTimestamp()
-      });
-      showToast('Payment submitted for review');
-      renderAddFunds(); // Reload
-    } catch (err) {
-      showToast(err.message, 'error');
-    }
-  };
-}
-
-// --- ADMIN PANEL ---
-async function renderAdmin() {
-  if (userProfile.role !== 'admin') {
-    return showToast('Access Denied', 'error');
-  }
-
-  document.getElementById('main-content').innerHTML = `
-    <h2 style="margin-bottom:20px;">Admin Panel</h2>
-    <div class="tabs">
-      <div class="tab active" onclick="switchAdminTab('payments')">Payments</div>
-      <div class="tab" onclick="switchAdminTab('orders')">Orders</div>
-      <div class="tab" onclick="switchAdminTab('services')">Services</div>
-    </div>
-    <div id="admin-content">Loading...</div>
-  `;
-  
-  window.switchAdminTab = (tab) => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    if (tab === 'payments') loadAdminPayments();
-    if (tab === 'orders') loadAdminOrders();
-    if (tab === 'services') loadAdminServices();
-  };
-
-  loadAdminPayments();
-}
-
-async function loadAdminPayments() {
-  const q = query(collection(db, "payments"), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-  
-  let html = `<div class="card table-container"><table><thead><tr><th>User</th><th>Trx ID</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>`;
-  
-  querySnapshot.forEach(docSnap => {
-    const p = docSnap.data();
-    const id = docSnap.id;
-    if (p.status === 'Pending') {
-      html += `
-        <tr>
-          <td>${p.userId.slice(0,5)}...</td>
-          <td>${p.transactionId}</td>
-          <td>$${p.amount}</td>
-          <td><span class="badge badge-pending">${p.status}</span></td>
-          <td>
-            <button class="btn btn-success btn-sm" onclick="approvePayment('${id}', '${p.userId}', ${p.amount})">✓</button>
-            <button class="btn btn-danger btn-sm" onclick="rejectPayment('${id}')">✗</button>
-          </td>
-        </tr>
-      `;
-    }
-  });
-  html += `</tbody></table></div>`;
-  document.getElementById('admin-content').innerHTML = html;
-}
-
-window.approvePayment = async (paymentId, userId, amount) => {
-  if (!confirm('Approve this payment?')) return;
-  try {
-    await runTransaction(db, async (transaction) => {
-      const userRef = doc(db, "users", userId);
-      const payRef = doc(db, "payments", paymentId);
-      
-      const userDoc = await transaction.get(userRef);
-      if (!userDoc.exists()) throw "User not found";
-      
-      const newBalance = (userDoc.data().balance || 0) + amount;
-      transaction.update(userRef, { balance: newBalance });
-      transaction.update(payRef, { status: 'Approved' });
+  function loadUser(uid){
+    db.collection("users").doc(uid).onSnapshot(doc=>{
+      currentUserData = doc.data();
+      userBalance.innerText = currentUserData.balance;
     });
-    showToast('Payment Approved');
-    loadAdminPayments();
-  } catch (err) {
-    showToast(err.message, 'error');
   }
-};
 
-window.rejectPayment = async (paymentId) => {
-  if (!confirm('Reject this payment?')) return;
-  try {
-    await updateDoc(doc(db, "payments", paymentId), { status: 'Rejected' });
-    showToast('Payment Rejected');
-    loadAdminPayments();
-  } catch (err) {
-    showToast(err.message, 'error');
-  }
-};
-
-async function loadAdminOrders() {
-  const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-  
-  let html = `<div class="card table-container"><table><thead><tr><th>ID</th><th>Service</th><th>Link</th><th>Status</th><th>Action</th></tr></thead><tbody>`;
-  
-  querySnapshot.forEach(docSnap => {
-    const o = docSnap.data();
-    const id = docSnap.id;
-    html += `
-      <tr>
-        <td>${o.orderId.slice(0,5)}</td>
-        <td>${o.serviceName}</td>
-        <td>${o.link.slice(0, 15)}...</td>
-        <td><span class="badge badge-${o.status === 'Completed' ? 'completed' : 'pending'}">${o.status}</span></td>
-        <td>
-          <select onchange="updateOrderStatus('${id}', this.value)" style="background:#333; color:white; border:none; padding:5px;">
-            <option value="">Set Status</option>
-            <option value="Pending">Pending</option>
-            <option value="Processing">Processing</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-        </td>
-      </tr>
-    `;
-  });
-  html += `</tbody></table></div>`;
-  document.getElementById('admin-content').innerHTML = html;
-}
-
-window.updateOrderStatus = async (id, status) => {
-  if (!status) return;
-  await updateDoc(doc(db, "orders", id), { status: status });
-  showToast('Order Updated');
-};
-
-async function loadAdminServices() {
-  const q = query(collection(db, "services"), orderBy("category"));
-  const querySnapshot = await getDocs(q);
-  
-  let html = `
-    <div class="card">
-      <h3>Add Service</h3>
-      <form id="add-service-form" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <input type="text" id="s-name" placeholder="Name" class="form-control" required>
-        <input type="text" id="s-cat" placeholder="Category" class="form-control" required>
-        <input type="number" id="s-price" placeholder="Price per 1k" class="form-control" step="0.01" required>
-        <input type="number" id="s-min" placeholder="Min" class="form-control" required>
-        <input type="number" id="s-max" placeholder="Max" class="form-control" required>
-        <button type="submit" class="btn btn-success">Add</button>
-      </form>
-    </div>
-    <div class="card table-container"><table><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Action</th></tr></thead><tbody>
-  `;
-  
-  querySnapshot.forEach(docSnap => {
-    const s = docSnap.data();
-    html += `<tr><td>${s.name}</td><td>${s.category}</td><td>$${s.price}</td><td><button class="btn btn-danger btn-sm" onclick="deleteService('${docSnap.id}')">Del</button></td></tr>`;
-  });
-  html += `</tbody></table></div>`;
-  document.getElementById('admin-content').innerHTML = html;
-
-  document.getElementById('add-service-form').onsubmit = async (e) => {
-    e.preventDefault();
-    await addDoc(collection(db, "services"), {
-      name: document.getElementById('s-name').value,
-      category: document.getElementById('s-cat').value,
-      price: parseFloat(document.getElementById('s-price').value),
-      min: parseInt(document.getElementById('s-min').value),
-      max: parseInt(document.getElementById('s-max').value)
+  function loadServices(){
+    db.collection("services").get().then(snapshot=>{
+      serviceSelect.innerHTML="";
+      snapshot.forEach(doc=>{
+        let s=doc.data();
+        serviceSelect.innerHTML+=`<option value="${doc.id}" data-price="${s.price}">
+          ${s.name} - $${s.price}
+        </option>`;
+      });
     });
-    showToast('Service Added');
-    loadAdminServices();
-  };
-}
-
-window.deleteService = async (id) => {
-  if (!confirm('Delete?')) return;
-  try {
-    await deleteDoc(doc(db, "services", id));
-    showToast('Service Deleted');
-    loadAdminServices();
-  } catch (err) {
-    showToast(err.message, 'error');
   }
-};
+
+  function placeOrder(){
+    let serviceId=serviceSelect.value;
+    let price=parseFloat(serviceSelect.selectedOptions[0].dataset.price);
+    let qty=parseInt(orderQty.value);
+    let total=price*qty;
+
+    if(currentUserData.balance<total){
+      alert("Insufficient balance");
+      return;
+    }
+
+    db.collection("orders").add({
+      userId:auth.currentUser.uid,
+      serviceId,
+      link:orderLink.value,
+      quantity:qty,
+      price:total,
+      status:"Pending",
+      createdAt:new Date()
+    });
+
+    db.collection("users").doc(auth.currentUser.uid)
+    .update({balance: currentUserData.balance-total});
+
+    alert("Order placed");
+  }
+
+  function loadOrders(uid){
+    db.collection("orders")
+    .where("userId","==",uid)
+    .onSnapshot(snapshot=>{
+      ordersList.innerHTML="";
+      snapshot.forEach(doc=>{
+        let o=doc.data();
+        ordersList.innerHTML+=`
+          <div class="card">
+            <p>ID: ${doc.id}</p>
+            <p>Service: ${o.serviceId}</p>
+            <p>Status: <span class="badge ${o.status.toLowerCase()}">${o.status}</span></p>
+          </div>`;
+      });
+    });
+  }
+
+  function submitPayment(){
+    db.collection("payments").add({
+      userId:auth.currentUser.uid,
+      network:network.value,
+      amount:parseFloat(amount.value),
+      transactionId:txId.value,
+      phone:phone.value,
+      status:"Pending",
+      createdAt:new Date()
+    });
+    alert("Payment Submitted");
+  }
+
+  function showPage(page){
+    homePage.classList.add("hidden");
+    orderPage.classList.add("hidden");
+    ordersPage.classList.add("hidden");
+    fundsPage.classList.add("hidden");
+
+    if(page=="home")homePage.classList.remove("hidden");
+    if(page=="order")orderPage.classList.remove("hidden");
+    if(page=="orders")ordersPage.classList.remove("hidden");
+    if(page=="funds")fundsPage.classList.remove("hidden");
+  }
 
 </script>
+
 </body>
 </html>
