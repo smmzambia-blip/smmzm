@@ -156,10 +156,7 @@ td { padding: 16px; border-bottom: 1px solid var(--glass-border); color: var(--t
 </head>
 <body>
 
-<!-- Required Blogger Section -->
-<b:section id='main' showaddelement='no'>
-<b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='1'/>
-</b:section>
+
 
 <!-- APP ROOT -->
 <div id="app">
